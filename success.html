@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Compra Exitosa! - LibroStore</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <h1>LibroStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#book"><i class="fas fa-book-open"></i> Libro</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> Nosotros</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main style="display: flex; align-items: center; justify-content: center;">
+            <div class="success-container">
+                <div class="success-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="success-title">¡Compra exitosa!</h1>
+                <p class="success-message">
+                    Gracias por comprar "La Guía Definitiva". Su compra ha sido procesada correctamente.
+                </p>
+                
+                <div class="success-buttons">
+                    <button id="downloadButton" class="download-button">
+                        <i class="fas fa-download"></i> Descargar libro
+                    </button>
+                </div>
+                
+                <div id="emailSent" class="email-sent" style="display: none;">
+                    <i class="fas fa-envelope"></i> Se ha enviado un correo de confirmación a su email.
+                </div>
+                
+                <div id="emailError" class="email-error" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i> Hubo un problema al enviar el correo. Por favor, contacte a soporte.
+                </div>
+                
+                <div id="emailDebug" class="email-debug" style="display: none; margin-top: 15px; padding: 10px; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; font-family: monospace; font-size: 12px;">
+                </div>
+                
+                <a href="index.html" class="back-link">Volver a la página principal</a>
+                
+                <div id="downloadNote" class="download-note" style="display: none;">
+                    Nota: Este enlace de descarga es válido solo una vez. Si necesita descargar el libro nuevamente, por favor contacte a soporte.
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-book"></i>
+                        <h3>LibroStore</h3>
+                    </div>
+                    <p>Tu portal al conocimiento</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#book">Libro</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> soporte@librostore.com</li>
+                        <li><i class="fas fa-phone"></i> +51 946 812 123</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> LibroStore. Todos los derechos reservados.
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            emailjs.init("xjs_Unq1YeUn2jD8p");
+            
+            const downloadButton = document.getElementById('downloadButton');
+            const downloadNote = document.getElementById('downloadNote');
+            const messageSent = document.getElementById('messageSent');
+            const emailSent = document.getElementById('emailSent');
+            const emailError = document.getElementById('emailError');
+            const emailDebug = document.getElementById('emailDebug');
+            
+            const customerName = sessionStorage.getItem('customerName') || '';
+            const customerEmail = sessionStorage.getItem('customerEmail') || '';
+            const customerPhone = sessionStorage.getItem('customerPhone') || '';
+            const paymentMethod = sessionStorage.getItem('paymentMethod') || '';
+            const purchaseAmount = sessionStorage.getItem('purchaseAmount') || '25,20';
+            const purchaseDate = sessionStorage.getItem('purchaseDate') || new Date().toLocaleDateString('es-ES');
+            
+            const orderId = 'ORD-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            
+            const downloadToken = 'download-' + Math.random().toString(36).substring(2, 15);
+            
+            if (customerEmail) {
+                console.log("Sending email to:", customerEmail);
+                
+                const templateParams = {
+                    recipient: customerEmail,
+                    
+                    order_id: orderId,
+                    email: customerEmail,
+                    
+                    orders: [
+                        {
+                            image_url: "book/ebook.png",
+                            name: 'Ebook',
+                            units: '1',
+                            price: purchaseAmount
+                        }
+                    ],
+                    
+                    cost: {
+                        shipping: '0.00',
+                        tax: '0.00',
+                        total: purchaseAmount
+                    }
+                };
+                
+                console.log("Email parameters:", JSON.stringify(templateParams, null, 2));
+                
+                emailjs.send(
+                    'service_58gvzkp',  
+                    'template_pz0x80n',
+                    templateParams
+                ).then(function(response) {
+                    console.log('Email sent successfully:', response);
+                    emailSent.style.display = 'block';
+                }, function(error) {
+                    console.error('Email sending failed:', error);
+                    emailError.style.display = 'block';
+                    
+                    emailDebug.innerHTML += `<br><strong>Error:</strong> ${JSON.stringify(error)}`;
+                    emailDebug.style.display = 'block';
+                });
+            } else {
+                console.warn("No email address provided, skipping email confirmation");
+                emailDebug.innerHTML += "<br><strong>Warning:</strong> No email address provided";
+                emailDebug.style.display = 'block';
+            }
+            
+            if (customerPhone) {
+                setTimeout(function() {
+                    console.log(`Mensaje enviado a ${customerPhone}: "¡Gracias por su compra de La Guía Definitiva!"`);
+                    messageSent.style.display = 'block';
+                }, 1500);
+            }
+            
+            downloadButton.addEventListener('click', function() {
+                if (localStorage.getItem(downloadToken)) {
+                    alert('Este libro ya ha sido descargado. Por favor, contacte a soporte si necesita ayuda.');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.href = "book/ebook.pdf";
+                link.download = 'ebook.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                localStorage.setItem(downloadToken, 'used');
+                downloadButton.textContent = 'Descargado';
+                downloadButton.disabled = true;
+                downloadNote.style.display = 'block';
+            });
+            
+            const manualSendButton = document.createElement('button');
+            manualSendButton.textContent = 'Reenviar correo de confirmación';
+            manualSendButton.className = 'download-button';
+            manualSendButton.style.backgroundColor = '#0070ba';
+            manualSendButton.style.marginTop = '10px';
+            
+            manualSendButton.addEventListener('click', function() {
+                if (!customerEmail) {
+                    alert('No hay dirección de correo electrónico disponible.');
+                    return;
+                }
+                
+                emailSent.style.display = 'none';
+                emailError.style.display = 'none';
+                
+                const resendParams = {
+                    recipient: customerEmail,
+                    email: customerEmail,
+                    order_id: orderId,
+                    orders: [
+                        {
+                            image_url: 'book/ebook.png',
+                            name: 'La Guía Definitiva',
+                            units: '1',
+                            price: purchaseAmount
+                        }
+                    ],
+                    cost: {
+                        shipping: '0.00',
+                        tax: '0.00',
+                        total: purchaseAmount
+                    }
+                };
+                
+                emailjs.send(
+                    'service_58gvzkp',
+                    'template_pz0x80n',
+                    resendParams
+                ).then(function(response) {
+                    console.log('Email sent successfully:', response);
+                    emailSent.style.display = 'block';
+                    alert('Correo reenviado. Por favor revisa tu bandeja de entrada y carpeta de spam.');
+                }, function(error) {
+                    console.error('Email sending failed:', error);
+                    emailError.style.display = 'block';
+                    alert('Error al reenviar el correo: ' + JSON.stringify(error));
+                });
+            });
+            
+            document.querySelector('.success-buttons').appendChild(manualSendButton);
+            
+            document.querySelector('.success-buttons').appendChild(testButton);
+        });
+    </script>
+</body>
+</html>

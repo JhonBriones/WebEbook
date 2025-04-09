@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibroStore - La Guía Definitiva</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-book"></i>
+                <h1>LibroStore</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Inicio</a></li>
+                    <li><a href="#book"><i class="fas fa-book-open"></i> Libro</a></li>
+                    <li><a href="#"><i class="fas fa-info-circle"></i> Nosotros</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <section id="book" class="book-section">
+                <div class="book-image-container">
+                    <div class="main-image">
+                        <img src="book/ebook.png" alt="Portada del Libro">
+                    </div>
+                    
+                    <!-- Book Preview Gallery -->
+                    <div class="book-preview-gallery">
+                        <div class="preview-item">
+                            <img src="book/ebook.png" alt="Vista previa del capítulo 1">
+                            <p>Introducción a los conceptos básicos</p>
+                        </div>
+                        <div class="preview-item">
+                            <img src="book/ebook.png" alt="Vista previa del capítulo 2">
+                            <p>Técnicas avanzadas explicadas</p>
+                        </div>
+                        <div class="preview-item">
+                            <img src="book/ebook.png" alt="Vista previa del capítulo 3">
+                            <p>Casos de estudio prácticos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="book-details">
+                    <h1>Ebook - Informe semanal</h1>
+                    <p class="author">Por Jhon Briones</p>
+                    
+                    <div class="rating">
+                        <div class="stars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <span>4.9 (108 reseñas)</span>
+                    </div>
+                    
+                    <p class="description">
+                        Organiza y optimiza tu semana con esta guía esencial. 
+                        Este libro ofrece un registro detallado de actividades semanales, ideal para mejorar 
+                        la productividad, el seguimiento de tareas y la coordinación dentro de tu empresa.
+                    </p>
+                    
+                    <div class="features">
+                        <h3>Lo que aprenderás:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Registro eficiente de actividades semanales</li>
+                            <li><i class="fas fa-check-circle"></i> Mejora en la organización y productividad</li>
+                            <li><i class="fas fa-check-circle"></i> Casos prácticos aplicados a empresas</li>
+                            <li><i class="fas fa-check-circle"></i> Consejos para una mejor gestión del tiempo</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="price">
+                        <span class="current-price">S/25,20</span>
+                        <span class="original-price">S/42,00</span>
+                        <span class="discount">40% DESCUENTO</span>
+                    </div>
+                    <p class="format">Descarga digital en PDF</p>
+                    
+                    <button id="buyButton" class="buy-button">Comprar Ahora</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-book"></i>
+                        <h3>LibroStore</h3>
+                    </div>
+                    <p>Tu portal al conocimiento</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#">Inicio</a></li>
+                        <li><a href="#book">Libro</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> soporte@librostore.com</li>
+                        <li><i class="fas fa-phone"></i> +51 946 812 123</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                &copy; <span id="year"></span> LibroStore. Todos los derechos reservados.
+            </div>
+        </footer>
+
+        <!-- Payment Modal -->
+        <div id="paymentModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Opciones de Pago</h2>
+                    <span class="close">&times;</span>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="tabs">
+                        <button class="tab-button active" data-tab="card">
+                            <i class="fas fa-credit-card"></i> Tarjeta de Crédito
+                        </button>
+                        <button class="tab-button" data-tab="paypal">
+                            <i class="fab fa-paypal"></i> PayPal
+                        </button>
+                    </div>
+                    
+                    <div id="cardTab" class="tab-content active">
+                        <form id="cardForm">
+                            <div class="form-group">
+                                <label for="name">Nombre Completo</label>
+                                <input type="text" id="name" placeholder="Juan Pepe Peres" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Correo Electrónico</label>
+                                <input type="email" id="email" placeholder="juan@ejemplo.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Número de Teléfono (para confirmación)</label>
+                                <input type="tel" id="phone" placeholder="+51 945 965 845" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cardNumber">Número de Tarjeta</label>
+                                <input type="text" id="cardNumber" placeholder="4778 4231 5677 4321" maxlength="19" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="cardName">Nombre en la Tarjeta</label>
+                                    <input type="text" id="cardName" placeholder="JUAN PEREZ" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expMonth">Mes de Expiración</label>
+                                    <select id="expMonth" required>
+                                        <option value="">Mes</option>
+                                        <option value="01">01 - Enero</option>
+                                        <option value="02">02 - Febrero</option>
+                                        <option value="03">03 - Marzo</option>
+                                        <option value="04">04 - Abril</option>
+                                        <option value="05">05 - Mayo</option>
+                                        <option value="06">06 - Junio</option>
+                                        <option value="07">07 - Julio</option>
+                                        <option value="08">08 - Agosto</option>
+                                        <option value="09">09 - Septiembre</option>
+                                        <option value="10">10 - Octubre</option>
+                                        <option value="11">11 - Noviembre</option>
+                                        <option value="12">12 - Diciembre</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expYear">Año de Expiración</label>
+                                    <select id="expYear" required>
+                                        <option value="">Año</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2024">2024</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                        <option value="2027">2027</option>
+                                        <option value="2028">2028</option>
+                                        <option value="2029">2029</option>
+                                        <option value="2030">2030</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvc">CVC</label>
+                                    <input type="text" id="cvc" placeholder="123" maxlength="4" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group card-icons">
+                                <i class="fab fa-cc-visa"></i>
+                                <i class="fab fa-cc-mastercard"></i>
+                                <i class="fab fa-cc-amex"></i>
+                                <i class="fab fa-cc-discover"></i>
+                            </div>
+                            
+                            <button type="submit" class="submit-button">Pagar S/25,20</button>
+                        </form>
+                    </div>
+                    
+                    <div id="paypalTab" class="tab-content">
+                        <form id="paypalForm">
+                            <div class="form-group">
+                                <label for="paypalEmail">Correo Electrónico de PayPal</label>
+                                <input type="email" id="paypalEmail" placeholder="tu@correo.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="paypalPhone">Número de Teléfono (para confirmación)</label>
+                                <input type="tel" id="paypalPhone" placeholder="+51 945 965 845" required>
+                            </div>
+                            
+                            <p class="paypal-info">Haz clic en el botón de abajo para completar tu compra usando PayPal.</p>
+                            
+                            <button type="submit" class="paypal-button">Pagar con PayPal</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Processing Modal -->
+        <div id="processingModal" class="modal processing-modal">
+            <div class="processing-content">
+                <div class="spinner"></div>
+                <h3>Procesando su pago</h3>
+                <p>Por favor espere un momento...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
