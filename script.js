@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form submission
+    // Form submission for credit card
     const cardForm = document.getElementById('cardForm');
     const paypalForm = document.getElementById('paypalForm');
     
@@ -93,9 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         paymentModal.style.display = 'none';
         processingModal.style.display = 'block';
         
-        // In a real application, you would create a payment method with Stripe
-        // For this demo, we'll simulate a successful payment
-        
         // Store customer data for success page
         sessionStorage.setItem('customerName', name);
         sessionStorage.setItem('customerEmail', email);
@@ -119,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     });
     
+    // Form submission for PayPal
     paypalForm.addEventListener('submit', function(e) {
         e.preventDefault();
         

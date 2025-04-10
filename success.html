@@ -103,10 +103,13 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Actualizamos el año
             document.getElementById('year').textContent = new Date().getFullYear();
             
+            // Inicializar emailjs
             emailjs.init("xjs_Unq1YeUn2jD8p");
-            
+    
+            // Elementos de la página
             const downloadButton = document.getElementById('downloadButton');
             const downloadNote = document.getElementById('downloadNote');
             const messageSent = document.getElementById('messageSent');
@@ -114,6 +117,7 @@
             const emailError = document.getElementById('emailError');
             const emailDebug = document.getElementById('emailDebug');
             
+            // Información del cliente
             const customerName = sessionStorage.getItem('customerName') || '';
             const customerEmail = sessionStorage.getItem('customerEmail') || '';
             const customerPhone = sessionStorage.getItem('customerPhone') || '';
@@ -122,135 +126,93 @@
             const purchaseDate = sessionStorage.getItem('purchaseDate') || new Date().toLocaleDateString('es-ES');
             
             const orderId = 'ORD-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-            
             const downloadToken = 'download-' + Math.random().toString(36).substring(2, 15);
-            
+    
+            // Enviar email si hay correo
             if (customerEmail) {
                 console.log("Sending email to:", customerEmail);
-                
                 const templateParams = {
                     recipient: customerEmail,
-                    
                     order_id: orderId,
                     email: customerEmail,
-                    
-                    orders: [
-                        {
-                            image_url: "book/ebook.png",
-                            name: 'Ebook',
-                            units: '1',
-                            price: purchaseAmount
-                        }
-                    ],
-                    
+                    orders: [{
+                        image_url: "book/ebook.png",
+                        name: 'Ebook',
+                        units: '1',
+                        price: purchaseAmount
+                    }],
                     cost: {
                         shipping: '0.00',
                         tax: '0.00',
                         total: purchaseAmount
                     }
                 };
-                
-                console.log("Email parameters:", JSON.stringify(templateParams, null, 2));
-                
-                emailjs.send(
-                    'service_58gvzkp',  
-                    'template_pz0x80n',
-                    templateParams
-                ).then(function(response) {
-                    console.log('Email sent successfully:', response);
-                    emailSent.style.display = 'block';
-                }, function(error) {
-                    console.error('Email sending failed:', error);
-                    emailError.style.display = 'block';
-                    
-                    emailDebug.innerHTML += `<br><strong>Error:</strong> ${JSON.stringify(error)}`;
-                    emailDebug.style.display = 'block';
-                });
+    
+                emailjs.send('service_58gvzkp', 'template_pz0x80n', templateParams)
+                    .then(response => {
+                        console.log('Email sent successfully:', response);
+                        emailSent.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Email sending failed:', error);
+                        emailError.style.display = 'block';
+                        emailDebug.innerHTML += `<br><strong>Error:</strong> ${JSON.stringify(error)}`;
+                        emailDebug.style.display = 'block';
+                    });
             } else {
                 console.warn("No email address provided, skipping email confirmation");
                 emailDebug.innerHTML += "<br><strong>Warning:</strong> No email address provided";
                 emailDebug.style.display = 'block';
             }
-            
+    
+            // Enviar mensaje si hay teléfono
             if (customerPhone) {
-                setTimeout(function() {
+                setTimeout(() => {
                     console.log(`Mensaje enviado a ${customerPhone}: "¡Gracias por su compra de La Guía Definitiva!"`);
                     messageSent.style.display = 'block';
                 }, 1500);
             }
-            
+    
+            // Verificar el estado de descarga al cargar la página
+            const downloadState = sessionStorage.getItem('bookDownloaded');
+            if (downloadState === 'true') {
+                downloadButton.textContent = 'Descargado';
+                downloadButton.disabled = true;
+                downloadNote.style.display = 'block';
+            }
+    
+            // Manejar la descarga del libro
             downloadButton.addEventListener('click', function() {
-                if (localStorage.getItem(downloadToken)) {
-                    alert('Este libro ya ha sido descargado. Por favor, contacte a soporte si necesita ayuda.');
+                if (sessionStorage.getItem('bookDownloaded') === 'true') {
+                    alert('Este libro ya ha sido descargado.');
                     return;
                 }
-                
+    
                 const link = document.createElement('a');
                 link.href = "book/ebook.pdf";
                 link.download = 'ebook.pdf';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                
-                localStorage.setItem(downloadToken, 'used');
+    
+                sessionStorage.setItem('bookDownloaded', 'true');
                 downloadButton.textContent = 'Descargado';
                 downloadButton.disabled = true;
                 downloadNote.style.display = 'block';
             });
-            
-            const manualSendButton = document.createElement('button');
-            manualSendButton.textContent = 'Reenviar correo de confirmación';
-            manualSendButton.className = 'download-button';
-            manualSendButton.style.backgroundColor = '#0070ba';
-            manualSendButton.style.marginTop = '10px';
-            
-            manualSendButton.addEventListener('click', function() {
-                if (!customerEmail) {
-                    alert('No hay dirección de correo electrónico disponible.');
-                    return;
-                }
-                
-                emailSent.style.display = 'none';
-                emailError.style.display = 'none';
-                
-                const resendParams = {
-                    recipient: customerEmail,
-                    email: customerEmail,
-                    order_id: orderId,
-                    orders: [
-                        {
-                            image_url: 'book/ebook.png',
-                            name: 'La Guía Definitiva',
-                            units: '1',
-                            price: purchaseAmount
-                        }
-                    ],
-                    cost: {
-                        shipping: '0.00',
-                        tax: '0.00',
-                        total: purchaseAmount
-                    }
-                };
-                
-                emailjs.send(
-                    'service_58gvzkp',
-                    'template_pz0x80n',
-                    resendParams
-                ).then(function(response) {
-                    console.log('Email sent successfully:', response);
-                    emailSent.style.display = 'block';
-                    alert('Correo reenviado. Por favor revisa tu bandeja de entrada y carpeta de spam.');
-                }, function(error) {
-                    console.error('Email sending failed:', error);
-                    emailError.style.display = 'block';
-                    alert('Error al reenviar el correo: ' + JSON.stringify(error));
-                });
+    
+            // Limpiar el sessionStorage al regresar al index
+            document.getElementById('backToHome').addEventListener('click', function() {
+                sessionStorage.removeItem('bookDownloaded');
+                console.log('📂 Estado de descarga limpiado');
             });
-            
-            document.querySelector('.success-buttons').appendChild(manualSendButton);
-            
-            document.querySelector('.success-buttons').appendChild(testButton);
+    
+            // Asegurarse de limpiar sessionStorage cuando el usuario vuelva al index
+            window.addEventListener('beforeunload', function() {
+                sessionStorage.removeItem('bookDownloaded');
+            });
         });
     </script>
+
 </body>
 </html>
